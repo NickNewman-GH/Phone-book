@@ -4,7 +4,7 @@
 //
 //}
 
-//Добавление контакта
+//Р”РѕР±Р°РІР»РµРЅРёРµ РєРѕРЅС‚Р°РєС‚Р°
 
 void TelephoneBook::addContact(string surname, string phoneNumber, string profile) {
 
@@ -23,7 +23,7 @@ void TelephoneBook::addContact(string surname, string phoneNumber, string profil
 	book[surname] = phoneAndProfile;
 }
 
-//Найти номер контакта по имени контакта
+//РќР°Р№С‚Рё РЅРѕРјРµСЂ РєРѕРЅС‚Р°РєС‚Р° РїРѕ РёРјРµРЅРё РєРѕРЅС‚Р°РєС‚Р°
 
 string TelephoneBook::findContactNumber(string surname) {
 
@@ -38,7 +38,7 @@ string TelephoneBook::findContactNumber(string surname) {
 	}
 }
 
-//Вывести информацию о контакте консоль
+//Р’С‹РІРµСЃС‚Рё РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ РєРѕРЅС‚Р°РєС‚Рµ РєРѕРЅСЃРѕР»СЊ
 
 void TelephoneBook::showContact(string surname) {
 	map <string, vector <string>> ::iterator it = book.find(surname);
@@ -53,7 +53,7 @@ void TelephoneBook::showContact(string surname) {
 	}
 }
 
-//Удалить контакт
+//РЈРґР°Р»РёС‚СЊ РєРѕРЅС‚Р°РєС‚
 
 void TelephoneBook::removeContact(string surname) {
 
@@ -67,7 +67,7 @@ void TelephoneBook::removeContact(string surname) {
 	}
 }
 
-//Полностью очистить книгу
+//РџРѕР»РЅРѕСЃС‚СЊСЋ РѕС‡РёСЃС‚РёС‚СЊ РєРЅРёРіСѓ
 
 void TelephoneBook::clear() {
 
@@ -79,7 +79,7 @@ void TelephoneBook::clear() {
 	}
 }
 
-//Проверить, есть ли контакт в книге
+//РџСЂРѕРІРµСЂРёС‚СЊ, РµСЃС‚СЊ Р»Рё РєРѕРЅС‚Р°РєС‚ РІ РєРЅРёРіРµ
 
 bool TelephoneBook::isContactInBook(string surname) {
 
@@ -93,7 +93,7 @@ bool TelephoneBook::isContactInBook(string surname) {
 	}
 }
 
-//Изменить номер контакта
+//РР·РјРµРЅРёС‚СЊ РЅРѕРјРµСЂ РєРѕРЅС‚Р°РєС‚Р°
 
 void TelephoneBook::changeContactNumber(string surname, string phoneNumber) {
 	
@@ -110,7 +110,7 @@ void TelephoneBook::changeContactNumber(string surname, string phoneNumber) {
 	}
 }
 
-//Изменить доп. информацию (то, кем этот человек тебе приходится)
+//РР·РјРµРЅРёС‚СЊ РґРѕРї. РёРЅС„РѕСЂРјР°С†РёСЋ (С‚Рѕ, РєРµРј СЌС‚РѕС‚ С‡РµР»РѕРІРµРє С‚РµР±Рµ РїСЂРёС…РѕРґРёС‚СЃСЏ)
 
 void TelephoneBook::changeContactProfile(string surname, string profile) {
 
@@ -127,7 +127,7 @@ void TelephoneBook::changeContactProfile(string surname, string profile) {
 	}
 }
 
-//Убрать доп. информацию у контакта
+//РЈР±СЂР°С‚СЊ РґРѕРї. РёРЅС„РѕСЂРјР°С†РёСЋ Сѓ РєРѕРЅС‚Р°РєС‚Р°
 
 void TelephoneBook::removeContactProfile(string surname) {
 
@@ -144,7 +144,7 @@ void TelephoneBook::removeContactProfile(string surname) {
 	}
 }
 
-//Добавить доп. информацию к контакту
+//Р”РѕР±Р°РІРёС‚СЊ РґРѕРї. РёРЅС„РѕСЂРјР°С†РёСЋ Рє РєРѕРЅС‚Р°РєС‚Сѓ
 
 void TelephoneBook::addProfileToContact(string surname, string profile) {
 
@@ -161,7 +161,7 @@ void TelephoneBook::addProfileToContact(string surname, string profile) {
 	}
 }
 
-//Загрузить книгу в файл
+//Р—Р°РіСЂСѓР·РёС‚СЊ РєРЅРёРіСѓ РІ С„Р°Р№Р»
 
 void TelephoneBook::upload(string filename) {
 
