@@ -1,5 +1,7 @@
 #include "TelephoneBook.h"
 
+map <string, vector <string>> ::iterator it;
+
 //bool phoneCheck(string phoneNumber) {
 //
 //}
@@ -27,7 +29,7 @@ void TelephoneBook::addContact(string surname, string phoneNumber, string profil
 
 string TelephoneBook::findContactNumber(string surname) {
 
-	map <string, vector <string>> ::iterator it = book.find(surname);
+	it = book.find(surname);
 
 	if (it == book.end()) {
 		cout << "Contact '" << surname << "' is not found\n";
@@ -41,7 +43,7 @@ string TelephoneBook::findContactNumber(string surname) {
 //Вывести информацию о контакте консоль
 
 void TelephoneBook::showContact(string surname) {
-	map <string, vector <string>> ::iterator it = book.find(surname);
+	it = book.find(surname);
 	if (it == book.end()) {
 		throw TelephoneBookException{};
 	}
@@ -57,7 +59,7 @@ void TelephoneBook::showContact(string surname) {
 
 void TelephoneBook::removeContact(string surname) {
 
-	map <string, vector <string>> ::iterator it = book.find(surname);
+	it = book.find(surname);
 
 	if (it == book.end()) {
 		throw TelephoneBookException{};
@@ -71,8 +73,6 @@ void TelephoneBook::removeContact(string surname) {
 
 void TelephoneBook::clear() {
 
-	map <string, vector <string>> ::iterator it;
-
 	for (int i = book.size(); i != 0; i--) {
 		it = book.begin();
 		book.erase(it);
@@ -83,7 +83,7 @@ void TelephoneBook::clear() {
 
 bool TelephoneBook::isContactInBook(string surname) {
 
-	map <string, vector <string>> ::iterator it = book.find(surname);
+	it = book.find(surname);
 
 	if (it == book.end()) {
 		return false;
@@ -100,7 +100,7 @@ void TelephoneBook::changeContactNumber(string surname, string phoneNumber) {
 	//--TODO--
 	//phoneCheck(phoneNumber);
 
-	map <string, vector <string>> ::iterator it = book.find(surname);
+	it = book.find(surname);
 
 	if (it == book.end()) {
 		throw TelephoneBookException{};
@@ -114,7 +114,7 @@ void TelephoneBook::changeContactNumber(string surname, string phoneNumber) {
 
 void TelephoneBook::changeContactProfile(string surname, string profile) {
 
-	map <string, vector <string>> ::iterator it = book.find(surname);
+	it = book.find(surname);
 
 	if (it == book.end()) {
 		throw TelephoneBookException{};
@@ -131,7 +131,7 @@ void TelephoneBook::changeContactProfile(string surname, string profile) {
 
 void TelephoneBook::removeContactProfile(string surname) {
 
-	map <string, vector <string>> ::iterator it = book.find(surname);
+	it = book.find(surname);
 
 	if (it == book.end()) {
 		throw TelephoneBookException{};
@@ -148,7 +148,7 @@ void TelephoneBook::removeContactProfile(string surname) {
 
 void TelephoneBook::addProfileToContact(string surname, string profile) {
 
-	map <string, vector <string>> ::iterator it = book.find(surname);
+	it = book.find(surname);
 
 	if (it == book.end()) {
 		throw TelephoneBookException{};
@@ -172,7 +172,7 @@ void TelephoneBook::upload(string filename) {
 		throw TelephoneBookException{};
 	}
 
-	map <string, vector <string>> ::iterator it = book.begin();
+	it = book.begin();
 
 	for (int i = 0; it != book.end(); i++, it++) {
 		file << "Contact name: " << it->first;
