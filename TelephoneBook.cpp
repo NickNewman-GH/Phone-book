@@ -6,7 +6,7 @@ map <string, vector <string>> ::iterator it;
 //
 //}
 
-//Р”РѕР±Р°РІР»РµРЅРёРµ РєРѕРЅС‚Р°РєС‚Р°
+//Добавление контакта
 
 void TelephoneBook::addContact(string surname, string phoneNumber, string profile) {
 
@@ -22,12 +22,28 @@ void TelephoneBook::addContact(string surname, string phoneNumber, string profil
 		phoneAndProfile = { phoneNumber,profile };
 	}
 
+	it = book.begin();
+	for (int i = 0; it != book.end(); it++, i++) {
+		if (it->first == surname) {
+			if (profile == "undefined") {
+				otherContacts.push_back({ it->first, it->second[0] });
+				break;
+			}
+			else {
+				otherContacts.push_back({ it->first, it->second[0], it->second[1] });
+				break;
+			}
+		}
+	}
+
 	book[surname] = phoneAndProfile;
 }
 
-//РќР°Р№С‚Рё РЅРѕРјРµСЂ РєРѕРЅС‚Р°РєС‚Р° РїРѕ РёРјРµРЅРё РєРѕРЅС‚Р°РєС‚Р°
+//Найти номер контакта по имени контакта
 
-string TelephoneBook::findContactNumber(string surname) {
+string TelephoneBook::findContactNumbers(string surname) {
+
+	string forReturn;
 
 	it = book.find(surname);
 
@@ -36,14 +52,22 @@ string TelephoneBook::findContactNumber(string surname) {
 		return "undefined";
 	}
 	else {
-		return it->second[0];
+		forReturn = it->second[0];
+		for (int i = 0; i < otherContacts.size(); i++) {
+			if (otherContacts[i][0] == surname) {
+				forReturn += ("; " + otherContacts[i][1]);
+			}
+		}
+		return forReturn;
 	}
 }
 
-//Р’С‹РІРµСЃС‚Рё РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ РєРѕРЅС‚Р°РєС‚Рµ РєРѕРЅСЃРѕР»СЊ
+//Вывести информацию о контакте консоль
 
 void TelephoneBook::showContact(string surname) {
+
 	it = book.find(surname);
+
 	if (it == book.end()) {
 		throw TelephoneBookException{};
 	}
@@ -53,11 +77,22 @@ void TelephoneBook::showContact(string surname) {
 	else {
 		cout << "Contact name: " << it->first << "\nPhone number: " << it->second[0] << "\n";
 	}
+
+	for (int i = 0; i < otherContacts.size(); i++) {
+		if (otherContacts[i][0] == surname) {
+			if (otherContacts[i].size() > 2) {
+				cout << "Contact name: " << otherContacts[i][0] << "\nThis person is: " << otherContacts[i][2] << "\nPhone number: " << otherContacts[i][1] << "\n";
+			}
+			else {
+				cout << "Contact name: " << otherContacts[i][0] << "\nPhone number: " << otherContacts[i][1] << "\n";
+			}
+		}
+	}
 }
 
-//РЈРґР°Р»РёС‚СЊ РєРѕРЅС‚Р°РєС‚
+//Удалить контакт
 
-void TelephoneBook::removeContact(string surname) {
+void TelephoneBook::removeContact(string surname, string phoneNumber) {
 
 	it = book.find(surname);
 
@@ -65,11 +100,21 @@ void TelephoneBook::removeContact(string surname) {
 		throw TelephoneBookException{};
 	}
 	else {
-		book.erase(it);
+		if (it->second[0] == phoneNumber) {
+			book.erase(it);
+		}
+		else {
+			for (int i = 0; i < otherContacts.size(); i++) {
+				if (otherContacts[i][0] == surname and otherContacts[i][1]==phoneNumber) {
+					otherContacts.erase(otherContacts.begin() + i);
+					break;
+				}
+			}
+		}
 	}
 }
 
-//РџРѕР»РЅРѕСЃС‚СЊСЋ РѕС‡РёСЃС‚РёС‚СЊ РєРЅРёРіСѓ
+//Полностью очистить книгу
 
 void TelephoneBook::clear() {
 
@@ -77,15 +122,21 @@ void TelephoneBook::clear() {
 		it = book.begin();
 		book.erase(it);
 	}
+	otherContacts.clear();
 }
 
-//РџСЂРѕРІРµСЂРёС‚СЊ, РµСЃС‚СЊ Р»Рё РєРѕРЅС‚Р°РєС‚ РІ РєРЅРёРіРµ
+//Проверить, есть ли контакт в книге
 
 bool TelephoneBook::isContactInBook(string surname) {
 
 	it = book.find(surname);
 
 	if (it == book.end()) {
+		for (int i = 0; i < otherContacts.size(); i++) {
+			if (otherContacts[i][0] == surname) {
+				return true;
+			}
+		}
 		return false;
 	}
 	else {
@@ -93,9 +144,9 @@ bool TelephoneBook::isContactInBook(string surname) {
 	}
 }
 
-//РР·РјРµРЅРёС‚СЊ РЅРѕРјРµСЂ РєРѕРЅС‚Р°РєС‚Р°
+//Изменить номер контакта
 
-void TelephoneBook::changeContactNumber(string surname, string phoneNumber) {
+void TelephoneBook::changeContactNumber(string surname, string prevPhoneNumber, string phoneNumber) {
 	
 	//--TODO--
 	//phoneCheck(phoneNumber);
@@ -106,62 +157,219 @@ void TelephoneBook::changeContactNumber(string surname, string phoneNumber) {
 		throw TelephoneBookException{};
 	}
 	else {
-		it->second[0] = phoneNumber;
+		if (it->second[0] == prevPhoneNumber) {
+			it->second[0] = phoneNumber;
+		}
+		else {
+			for (int i = 0; i < otherContacts.size(); i++) {
+				if (otherContacts[i][0] == surname and otherContacts[i][1] == prevPhoneNumber) {
+					otherContacts[i][1] = phoneNumber;
+					break;
+				}
+			}
+		}
 	}
 }
 
-//РР·РјРµРЅРёС‚СЊ РґРѕРї. РёРЅС„РѕСЂРјР°С†РёСЋ (С‚Рѕ, РєРµРј СЌС‚РѕС‚ С‡РµР»РѕРІРµРє С‚РµР±Рµ РїСЂРёС…РѕРґРёС‚СЃСЏ)
+//Изменить доп. информацию (то, кем этот человек тебе приходится)
 
-void TelephoneBook::changeContactProfile(string surname, string profile) {
+void TelephoneBook::changeContactProfile(string surname, string phoneNumber, string profile) {
 
 	it = book.find(surname);
 
 	if (it == book.end()) {
-		throw TelephoneBookException{};
+		for (int i = 0; i < otherContacts.size(); i++) {
+			if (otherContacts[i][0] == surname and otherContacts[i][1] == phoneNumber) {
+				if (otherContacts.size() > 2) {
+					otherContacts[i][2] = profile;
+					break;
+				}
+				else {
+					throw TelephoneBookException{};
+				}
+			}
+			if (i == otherContacts.size()) {
+				throw TelephoneBookException{};
+			}
+		}
 	}
 	else if (it->second.size() < 2){
-		throw TelephoneBookException{};
+		if (it->second[0] != phoneNumber) {
+			for (int i = 0; i < otherContacts.size(); i++) {
+				if (otherContacts[i][0] == surname and otherContacts[i][1] == phoneNumber) {
+					if (otherContacts.size() > 2) {
+						otherContacts[i][2] = profile;
+						break;
+					}
+					else {
+						throw TelephoneBookException{};
+					}
+				}
+				if (i == otherContacts.size()) {
+					throw TelephoneBookException{};
+				}
+			}
+		}
+		else {
+			throw TelephoneBookException{};
+		}
 	}
 	else {
-		it->second[1] = profile;
+		if (it->second[0] != phoneNumber) {
+			for (int i = 0; i < otherContacts.size(); i++) {
+				if (otherContacts[i][0] == surname and otherContacts[i][1] == phoneNumber) {
+					if (otherContacts.size() > 2) {
+						otherContacts[i][2] = profile;
+						break;
+					}
+					else {
+						throw TelephoneBookException{};
+					}
+				}
+				if (i == otherContacts.size()) {
+					throw TelephoneBookException{};
+				}
+			}
+		}
+		else {
+			it->second[1] = profile;
+		}
 	}
 }
 
-//РЈР±СЂР°С‚СЊ РґРѕРї. РёРЅС„РѕСЂРјР°С†РёСЋ Сѓ РєРѕРЅС‚Р°РєС‚Р°
+//Убрать доп. информацию у контакта
 
-void TelephoneBook::removeContactProfile(string surname) {
+void TelephoneBook::removeContactProfile(string surname, string phoneNumber) {
 
 	it = book.find(surname);
 
 	if (it == book.end()) {
-		throw TelephoneBookException{};
+		for (int i = 0; i < otherContacts.size(); i++) {
+			if (otherContacts[i][0] == surname and otherContacts[i][1] == phoneNumber) {
+				if (otherContacts.size() > 2) {
+					otherContacts[i] = { otherContacts[i][0], otherContacts[i][1] };
+					break;
+				}
+				else {
+					throw TelephoneBookException{};
+				}
+			}
+			if (i == otherContacts.size()) {
+				throw TelephoneBookException{};
+			}
+		}
 	}
 	else if (it->second.size() < 2) {
-		throw TelephoneBookException{};
+		if (it->second[0] != phoneNumber) {
+			for (int i = 0; i < otherContacts.size(); i++) {
+				if (otherContacts[i][0] == surname and otherContacts[i][1] == phoneNumber) {
+					if (otherContacts.size() > 2) {
+						otherContacts[i] = { otherContacts[i][0], otherContacts[i][1] };
+						break;
+					}
+					else {
+						throw TelephoneBookException{};
+					}
+				}
+				if (i == otherContacts.size()) {
+					throw TelephoneBookException{};
+				}
+			}
+		}
+		else {
+			throw TelephoneBookException{};
+		}
 	}
 	else {
-		it->second = { it->second[0] };
+		if (it->second[0] != phoneNumber) {
+			for (int i = 0; i < otherContacts.size(); i++) {
+				if (otherContacts[i][0] == surname and otherContacts[i][1] == phoneNumber) {
+					if (otherContacts.size() > 2) {
+						otherContacts[i] = { otherContacts[i][0], otherContacts[i][1] };
+						break;
+					}
+					else {
+						throw TelephoneBookException{};
+					}
+				}
+				if (i == otherContacts.size()) {
+					throw TelephoneBookException{};
+				}
+			}
+		}
+		else {
+			it->second = { it->second[0] };
+		}
 	}
 }
 
-//Р”РѕР±Р°РІРёС‚СЊ РґРѕРї. РёРЅС„РѕСЂРјР°С†РёСЋ Рє РєРѕРЅС‚Р°РєС‚Сѓ
+//Добавить доп. информацию к контакту
 
-void TelephoneBook::addProfileToContact(string surname, string profile) {
+void TelephoneBook::addProfileToContact(string surname, string phoneNumber, string profile) {
 
 	it = book.find(surname);
 
 	if (it == book.end()) {
-		throw TelephoneBookException{};
+		for (int i = 0; i < otherContacts.size(); i++) {
+			if (otherContacts[i][0] == surname and otherContacts[i][1] == phoneNumber) {
+				if (otherContacts.size() < 3) {
+					otherContacts[i] = { otherContacts[i][0], otherContacts[i][1], profile };
+					break;
+				}
+				else {
+					throw TelephoneBookException{};
+				}
+			}
+			if (i == otherContacts.size()) {
+				throw TelephoneBookException{};
+			}
+		}
 	}
 	else if (it->second.size() > 1) {
-		throw TelephoneBookException{};
+		if (it->second[0] != phoneNumber) {
+			for (int i = 0; i < otherContacts.size(); i++) {
+				if (otherContacts[i][0] == surname and otherContacts[i][1] == phoneNumber) {
+					if (otherContacts.size() < 3) {
+						otherContacts[i] = { otherContacts[i][0], otherContacts[i][1], profile };
+						break;
+					}
+					else {
+						throw TelephoneBookException{};
+					}
+				}
+				if (i == otherContacts.size()) {
+					throw TelephoneBookException{};
+				}
+			}
+		}
+		else {
+			throw TelephoneBookException{};
+		}
 	}
 	else {
-		it->second = { it->second[0],profile };
+		if (it->second[0] != phoneNumber) {
+			for (int i = 0; i < otherContacts.size(); i++) {
+				if (otherContacts[i][0] == surname and otherContacts[i][1] == phoneNumber) {
+					if (otherContacts.size() < 3) {
+						otherContacts[i] = { otherContacts[i][0], otherContacts[i][1], profile };
+						break;
+					}
+					else {
+						throw TelephoneBookException{};
+					}
+				}
+				if (i == otherContacts.size()) {
+					throw TelephoneBookException{};
+				}
+			}
+		}
+		else {
+			it->second = { it->second[0],profile };
+		}
 	}
 }
 
-//Р—Р°РіСЂСѓР·РёС‚СЊ РєРЅРёРіСѓ РІ С„Р°Р№Р»
+//Загрузить книгу в файл
 
 void TelephoneBook::upload(string filename) {
 
@@ -175,10 +383,21 @@ void TelephoneBook::upload(string filename) {
 	it = book.begin();
 
 	for (int i = 0; it != book.end(); i++, it++) {
+
 		file << "Contact name: " << it->first;
 		if (it->second.size() > 1) {
 			file << "\nThis person is: " << it->second[1];
 		}
 		file << "\nPhone number: " << it->second[0] << "\n\n";
+
+		for (int i = 0; i < otherContacts.size(); i++) {
+			if (otherContacts[i][0] == it->first) {
+				file << "Contact name: " << otherContacts[i][0];
+				if (otherContacts[i].size() > 2) {
+					file << "\nThis person is: " << otherContacts[i][2];
+				}
+				file << "\nPhone number: " << otherContacts[i][1] << "\n\n";
+			}
+		}
 	}
 }
